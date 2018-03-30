@@ -7,10 +7,11 @@ class ListBooks extends Component
 {
   static propTypes = {
     books: PropTypes.array.isRequired,
+    onChangeShelf: PropTypes.func.isRequired
   }
 
   render() {
-    const {books} = this.props;
+    const {books, onChangeShelf} = this.props;
     let currentlyReadingBooks = books.filter(b => b.shelf === "currentlyReading")
     let wantToReadBooks = books.filter(b => b.shelf === "wantToRead")
     let readBooks = books.filter(b => b.shelf === "read")
@@ -22,9 +23,9 @@ class ListBooks extends Component
         </div>
         <div className="list-books-content">
           <div>
-            <BookShelf title={"Currently Reading"} books={currentlyReadingBooks} />
-            <BookShelf title={"Want to Read"} books={wantToReadBooks} />
-            <BookShelf title={"Read"} books={readBooks} />
+            <BookShelf title={"Currently Reading"} books={currentlyReadingBooks} onChangeShelf={onChangeShelf}  />
+            <BookShelf title={"Want to Read"} books={wantToReadBooks} onChangeShelf={onChangeShelf} />
+            <BookShelf title={"Read"} books={readBooks} onChangeShelf={onChangeShelf}/>
           </div>
         </div>
         <div className="open-search">
