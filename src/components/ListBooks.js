@@ -6,15 +6,12 @@ import BookShelf from './BookShelf';
 class ListBooks extends Component
 {
   static propTypes = {
-    books: PropTypes.array.isRequired,
+    books: PropTypes.object.isRequired,
     onChangeShelf: PropTypes.func.isRequired
   }
 
   render() {
     const {books, onChangeShelf} = this.props;
-    let currentlyReadingBooks = books.filter(b => b.shelf === "currentlyReading")
-    let wantToReadBooks = books.filter(b => b.shelf === "wantToRead")
-    let readBooks = books.filter(b => b.shelf === "read")
 
     return (
       <div className="list-books">
@@ -26,19 +23,19 @@ class ListBooks extends Component
             <div className="bookshelf">
               <h2 className="bookshelf-title">Curretly Reading</h2>
               <div className="bookshelf-books">
-                <BookShelf books={currentlyReadingBooks} onChangeShelf={onChangeShelf}  />
+                <BookShelf books={books.currentlyReading} onChangeShelf={onChangeShelf}  />
               </div>
             </div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Want to Read</h2>
               <div className="bookshelf-books">
-                <BookShelf books={wantToReadBooks} onChangeShelf={onChangeShelf}  />
+                <BookShelf books={books.wantToRead} onChangeShelf={onChangeShelf}  />
               </div>
             </div>
             <div className="bookshelf">
               <h2 className="bookshelf-title">Read</h2>
               <div className="bookshelf-books">
-                <BookShelf books={readBooks} onChangeShelf={onChangeShelf}  />
+                <BookShelf books={books.read} onChangeShelf={onChangeShelf}  />
               </div>
             </div>
           </div>

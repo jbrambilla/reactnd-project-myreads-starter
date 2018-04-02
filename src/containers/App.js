@@ -36,15 +36,19 @@ class BooksApp extends React.Component {
   }
 
   render() {
+    const bookMap = Utils.transformBooks(this.state.books);
+
     return (
       <div className="app">
         <Route path="/search" component={SearchBooks}/>
-        <Route exact path="/" render={() => (
-          <ListBooks 
-            books={this.state.books}
-            onChangeShelf={this.changeShelf}
-          />
-        )}/>
+        {bookMap.hasBooks && (
+          <Route exact path="/" render={() => (
+            <ListBooks
+              books={bookMap}
+              onChangeShelf={this.changeShelf}
+            />
+          )}/>
+        )}
       </div>
     )
   }
