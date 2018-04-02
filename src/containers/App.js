@@ -23,17 +23,18 @@ class BooksApp extends React.Component {
     BooksAPI
       .update(book, shelf)
       .then(values => {
-        const newBooks = this.state.books.map(book => { 
-          if (values.currentlyReading.indexOf(book.id) !== -1) {
-            book.shelf = 'currentlyReading';
-          } else if (values.wantToRead.indexOf(book.id) !== -1) {
-            book.shelf = 'wantToRead';
-          } else if (values.read.indexOf(book.id) !== -1) {
-            book.shelf = 'read';
-          }
-          return book;
+        this.setState((prevState) => {
+          books: prevState.books.map(book => {
+            if (values.currentlyReading.indexOf(book.id) !== -1) {
+              book.shelf = 'currentlyReading';
+            } else if (values.wantToRead.indexOf(book.id) !== -1) {
+              book.shelf = 'wantToRead';
+            } else if (values.read.indexOf(book.id) !== -1) {
+              book.shelf = 'read';
+            }
+            return book;
+          })
         })
-        this.setState({books: newBooks})
       });
   }
   render() {
