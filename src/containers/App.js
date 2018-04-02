@@ -4,6 +4,7 @@ import './App.css'
 import SearchBooks from './SearchBooks';
 import ListBooks from './../components/ListBooks';
 import {Route} from 'react-router-dom';
+import Utils from './../utils/Utils';
 
 class BooksApp extends React.Component {
 
@@ -25,17 +26,12 @@ class BooksApp extends React.Component {
       .then(values => {
         this.setState((prevState) => {
           books: prevState.books.map(book => {
-            if (values.currentlyReading.indexOf(book.id) !== -1) {
-              book.shelf = 'currentlyReading';
-            } else if (values.wantToRead.indexOf(book.id) !== -1) {
-              book.shelf = 'wantToRead';
-            } else if (values.read.indexOf(book.id) !== -1) {
-              book.shelf = 'read';
-            }
+            book.shelf = Utils.getShelf(values, book.id);
             return book;
           })
         })
-      });
+      })
+      .catch(reason => { console.log(Error(reason))});
   }
   render() {
     return (
