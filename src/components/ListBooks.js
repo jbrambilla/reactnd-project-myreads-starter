@@ -23,9 +23,24 @@ class ListBooks extends Component
         </div>
         <div className="list-books-content">
           <div>
-            <BookShelf title={"Currently Reading"} books={currentlyReadingBooks} onChangeShelf={onChangeShelf}  />
-            <BookShelf title={"Want to Read"} books={wantToReadBooks} onChangeShelf={onChangeShelf} />
-            <BookShelf title={"Read"} books={readBooks} onChangeShelf={onChangeShelf}/>
+            <div className="bookshelf">
+              <h2 className="bookshelf-title">Curretly Reading</h2>
+              <div className="bookshelf-books">
+                <BookShelf books={currentlyReadingBooks} onChangeShelf={onChangeShelf}  />
+              </div>
+            </div>
+            <div className="bookshelf">
+              <h2 className="bookshelf-title">Want to Read</h2>
+              <div className="bookshelf-books">
+                <BookShelf books={wantToReadBooks} onChangeShelf={onChangeShelf}  />
+              </div>
+            </div>
+            <div className="bookshelf">
+              <h2 className="bookshelf-title">Read</h2>
+              <div className="bookshelf-books">
+                <BookShelf books={readBooks} onChangeShelf={onChangeShelf}  />
+              </div>
+            </div>
           </div>
         </div>
         <div className="open-search">
