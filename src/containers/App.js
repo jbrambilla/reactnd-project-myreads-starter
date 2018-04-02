@@ -24,9 +24,10 @@ class BooksApp extends React.Component {
     BooksAPI
       .update(book, e.target.value)
       .then(values => {
+        let shelves = Utils.transformShelfs(values);
         this.setState((prevState) => {
           books: prevState.books.map(book => {
-            book.shelf = Utils.getShelf(values, book.id);
+            book.shelf = shelves[book.id];
             return book;
           })
         })
