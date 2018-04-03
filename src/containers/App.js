@@ -22,18 +22,18 @@ class BooksApp extends React.Component {
 
   changeShelf = (book, e) => {
     if (!this.state.books.filter(b => b.id === book.id).length) {
-      this.state.books.push(book);
+      this.setState((state) => ({books: state.books.concat([book])}))
     }
     BooksAPI
       .update(book, e.target.value)
       .then(values => {
         let shelves = Utils.transformShelfs(values);
-        this.setState((prevState) => {
+        this.setState((prevState) => ({
           books: prevState.books.map(book => {
             book.shelf = shelves[book.id];
             return book;
           })
-        })
+        }))
       })
       .catch(reason => { console.log(Error(reason))});
   }
