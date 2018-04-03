@@ -21,6 +21,9 @@ class BooksApp extends React.Component {
   }
 
   changeShelf = (book, e) => {
+    if (!this.state.books.filter(b => b.id === book.id).length) {
+      this.state.books.push(book);
+    }
     BooksAPI
       .update(book, e.target.value)
       .then(values => {
@@ -40,7 +43,12 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
-        <Route path="/search" component={SearchBooks}/>
+        <Route path="/search" render={() => (
+          <SearchBooks
+            onChangeShelf={this.changeShelf}
+            booksOnShelves={this.state.books}
+          />
+        )}/>
         {bookMap.hasBooks && (
           <Route exact path="/" render={() => (
             <ListBooks
