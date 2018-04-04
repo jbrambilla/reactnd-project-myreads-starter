@@ -4,6 +4,7 @@ import * as BooksAPI from './../BooksAPI'
 import BookShelf from './../components/BookShelf';
 import PropTypes from 'prop-types';
 import { ClipLoader } from 'react-spinners';
+import _ from 'lodash'
 
 class SearchBooks extends Component
 {
@@ -19,21 +20,25 @@ class SearchBooks extends Component
     noResults: false
   }
 
+  searchBooks = _.debounce((query) => {
+    BooksAPI
+    .search(query)
+    .then(books => this.setState({
+      booksFromSearch: books.map(book => {
+        var bookInShelf = this.props.booksOnShelves.find(b => b.id === book.id)
+        book.shelf = bookInShelf ? bookInShelf.shelf : 'none';
+        return book;
+      }),
+      loading: false,
+      noResults: false
+    }))
+    .catch(response => this.setState({loading: false, noResults: true}));
+  }, 1000)
+
   updateQuery = (query) => {
     this.setState({query, loading: true})
     if (query) {
-      BooksAPI
-        .search(query)
-        .then(books => this.setState({
-          booksFromSearch: books.map(book => {
-            var bookInShelf = this.props.booksOnShelves.find(b => b.id === book.id)
-            book.shelf = bookInShelf ? bookInShelf.shelf : 'none';
-            return book;
-          }),
-          loading: false,
-          noResults: false
-        }))
-        .catch(response => this.setState({loading: false, noResults: true}));
+      this.searchBooks(query)
     } else {
       this.setState({loading: false, booksFromSearch: []})
     }
