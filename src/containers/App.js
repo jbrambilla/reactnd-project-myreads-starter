@@ -5,6 +5,7 @@ import SearchBooks from './SearchBooks';
 import ListBooks from './../components/ListBooks';
 import {Route} from 'react-router-dom';
 import Utils from './../utils/Utils';
+import { ClipLoader } from 'react-spinners';
 
 class BooksApp extends React.Component {
 
@@ -22,9 +23,12 @@ class BooksApp extends React.Component {
   }
 
   changeShelf = (book, e) => {
+    this.setState({loadingChangeShelf: true})
+
     if (!this.state.books.filter(b => b.id === book.id).length) {
       this.setState((state) => ({books: state.books.concat([book])}))
     }
+
     BooksAPI
       .update(book, e.target.value)
       .then(values => {
@@ -33,7 +37,8 @@ class BooksApp extends React.Component {
           books: prevState.books.map(book => {
             book.shelf = shelves[book.id];
             return book;
-          })
+          }),
+          loadingChangeShelf: false
         }))
       })
       .catch(reason => { console.log(Error(reason))});
@@ -44,20 +49,30 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
-        <Route path="/search" render={() => (
-          <SearchBooks
-            onChangeShelf={this.changeShelf}
-            booksOnShelves={this.state.books}
-          />
-        )}/>
-        {bookMap.hasBooks && (
-          <Route exact path="/" render={() => (
-            <ListBooks
-              books={bookMap}
+        {this.state.loadingChangeShelf && (
+          <div className="loading">
+            <ClipLoader
+              color={'#2e7c31'}
+              loading={this.state.loadingChangeShelf}
+            />
+          </div>
+        )}
+        <div className={`${this.state.loadingChangeShelf ? 'transparent' : ''}`}>
+          <Route path="/search" render={() => (
+            <SearchBooks
               onChangeShelf={this.changeShelf}
+              booksOnShelves={this.state.books}
             />
           )}/>
-        )}
+          {bookMap.hasBooks && (
+            <Route exact path="/" render={() => (
+              <ListBooks
+                books={bookMap}
+                onChangeShelf={this.changeShelf}
+              />
+            )}/>
+          )}
+        </div>
       </div>
     )
   }
