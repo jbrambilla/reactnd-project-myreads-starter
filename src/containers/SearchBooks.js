@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import * as BooksAPI from './../BooksAPI'
 import BookShelf from './../components/BookShelf';
 import PropTypes from 'prop-types';
+import { ClipLoader } from 'react-spinners';
 
 class SearchBooks extends Component
 {
@@ -13,11 +14,12 @@ class SearchBooks extends Component
 
   state = {
     query: '',
-    booksFromSearch: []
+    booksFromSearch: [],
+    loading: false
   }
 
   updateQuery = (query) => {
-    this.setState({query})
+    this.setState({query, loading: true})
     if (query) {
       BooksAPI
         .search(query)
@@ -26,8 +28,11 @@ class SearchBooks extends Component
             var bookInShelf = this.props.booksOnShelves.find(b => b.id === book.id)
             book.shelf = bookInShelf ? bookInShelf.shelf : 'none';
             return book;
-          })
+          }),
+          loading: false
         }));
+    } else {
+      this.setState({loading: false})
     }
   }
 
@@ -41,10 +46,19 @@ class SearchBooks extends Component
           </div>
         </div>
         <div className="search-books-results">
-          <BookShelf
+        {this.state.loading ? (
+          <div className="loading">
+            <ClipLoader
+              color={'#2e7c31'}
+              loading={this.state.loading}
+            />
+          </div>
+        ) : (
+            <BookShelf
               books={this.state.booksFromSearch}
               onChangeShelf={this.props.onChangeShelf}
             />
+        )}
         </div>
       </div>
     )

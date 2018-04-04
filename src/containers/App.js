@@ -9,7 +9,8 @@ import Utils from './../utils/Utils';
 class BooksApp extends React.Component {
 
   state = {
-    books: []
+    books: [],
+    loadingChangeShelf: false
   }
 
   componentDidMount() {
