@@ -3,8 +3,8 @@ import {Link} from 'react-router-dom'
 import * as BooksAPI from './../BooksAPI'
 import BookShelf from './../components/BookShelf';
 import PropTypes from 'prop-types';
-import { ClipLoader } from 'react-spinners';
 import _ from 'lodash'
+import Spinner from '../components/Spinner';
 
 class SearchBooks extends Component
 {
@@ -23,16 +23,22 @@ class SearchBooks extends Component
   searchBooks = _.debounce((query) => {
     BooksAPI
     .search(query)
-    .then(books => this.setState({
-      booksFromSearch: books.map(book => {
-        var bookInShelf = this.props.booksOnShelves.find(b => b.id === book.id)
-        book.shelf = bookInShelf ? bookInShelf.shelf : 'none';
-        return book;
-      }),
-      loading: false,
-      noResults: false
-    }))
-    .catch(response => this.setState({loading: false, noResults: true}));
+    .then(books => {
+      if (!books.error) {
+        this.setState({
+          booksFromSearch: books.map(book => {
+            var bookInShelf = this.props.booksOnShelves.find(b => b.id === book.id)
+            book.shelf = bookInShelf ? bookInShelf.shelf : 'none';
+            return book;
+          }),
+          loading: false,
+          noResults: false
+        })
+      } else {
+        this.setState({loading: false, noResults: true, booksFromSearch: []})
+      }
+    })
+    .catch(response => console.log(new Error(response)));
   }, 1000)
 
   updateQuery = (query) => {
@@ -55,14 +61,16 @@ class SearchBooks extends Component
           </div>
           <div className="search-books-results">
             <Spinner loading={this.state.loading} />
-            {this.state.noResults ? (
-              <p>No results found. Please, refine your search.</p>
-            ) : (
-              <BookShelf
-                books={this.state.booksFromSearch}
-                onChangeShelf={this.props.onChangeShelf}
-              />
-            )}
+            <div className={this.state.loading ? 'transparent' : ''}>
+              {this.state.noResults ? (
+                <p>No results found. Please, refine your search.</p>
+              ) : (
+                <BookShelf
+                  books={this.state.booksFromSearch}
+                  onChangeShelf={this.props.onChangeShelf}
+                />
+              )}
+            </div>
           </div>
       </div>
     )

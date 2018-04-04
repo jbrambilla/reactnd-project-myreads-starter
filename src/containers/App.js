@@ -5,14 +5,13 @@ import SearchBooks from './SearchBooks';
 import ListBooks from './../components/ListBooks';
 import {Route} from 'react-router-dom';
 import Utils from './../utils/Utils';
-import { ClipLoader } from 'react-spinners';
 import Spinner from './../components/Spinner';
 
 class BooksApp extends React.Component {
 
   state = {
     books: [],
-    loadingChangeShelf: false
+    loading: false
   }
 
   componentDidMount() {
@@ -24,9 +23,9 @@ class BooksApp extends React.Component {
   }
 
   changeShelf = (book, e) => {
-    this.setState({loadingChangeShelf: true})
+    this.setState({loading: true})
 
-    //Adiciona o livro da página de busca aos livros da estante caso ainda não esteja lá
+    //Adds the book from search page to the shelves page in case it wasn't there
     if (!this.state.books.filter(b => b.id === book.id).length) {
       this.setState((state) => ({books: state.books.concat([book])}))
     }
@@ -34,38 +33,42 @@ class BooksApp extends React.Component {
     BooksAPI
       .update(book, e.target.value)
       .then(values => {
+        //transform shelves array into an object wich the properties comes to be the Id from the book
         let shelves = Utils.transformShelfs(values);
         this.setState((prevState) => ({
           books: prevState.books.map(book => {
             book.shelf = shelves[book.id];
             return book;
           }),
-          loadingChangeShelf: false
+          loading: false
         }))
       })
       .catch(reason => { console.log(Error(reason))});
   }
 
   render() {
+    //transform books array into an object which the properties are the shelves and each shelf has a list of books
     const bookMap = Utils.transformBooks(this.state.books);
 
     return (
       <div className="app">
-        <Spinner loading={this.state.loadingChangeShelf} />
-        <Route path="/search" render={() => (
-          <SearchBooks
-            onChangeShelf={this.changeShelf}
-            booksOnShelves={this.state.books}
-          />
-        )}/>
-        {bookMap.hasBooks && (
-          <Route exact path="/" render={() => (
-            <ListBooks
-              books={bookMap}
+        <Spinner loading={this.state.loading} />
+        <div className={this.state.loading ? 'transparent' : ''}>
+          <Route path="/search" render={() => (
+            <SearchBooks
               onChangeShelf={this.changeShelf}
+              booksOnShelves={this.state.books}
             />
           )}/>
-        )}
+          {bookMap.hasBooks && (
+            <Route exact path="/" render={() => (
+              <ListBooks
+                books={bookMap}
+                onChangeShelf={this.changeShelf}
+              />
+            )}/>
+          )}
+        </div>
       </div>
     )
   }

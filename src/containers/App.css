@@ -185,3 +185,7 @@ body, .app {
   bottom: 0;
   right: 0;
 }
+
+.transparent {
+  opacity: 0.5;
+}
