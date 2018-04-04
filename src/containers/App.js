@@ -6,6 +6,7 @@ import ListBooks from './../components/ListBooks';
 import {Route} from 'react-router-dom';
 import Utils from './../utils/Utils';
 import { ClipLoader } from 'react-spinners';
+import Spinner from './../components/Spinner';
 
 class BooksApp extends React.Component {
 
@@ -25,6 +26,7 @@ class BooksApp extends React.Component {
   changeShelf = (book, e) => {
     this.setState({loadingChangeShelf: true})
 
+    //Adiciona o livro da página de busca aos livros da estante caso ainda não esteja lá
     if (!this.state.books.filter(b => b.id === book.id).length) {
       this.setState((state) => ({books: state.books.concat([book])}))
     }
@@ -49,30 +51,21 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
-        {this.state.loadingChangeShelf && (
-          <div className="loading">
-            <ClipLoader
-              color={'#2e7c31'}
-              loading={this.state.loadingChangeShelf}
-            />
-          </div>
-        )}
-        <div className={`${this.state.loadingChangeShelf ? 'transparent' : ''}`}>
-          <Route path="/search" render={() => (
-            <SearchBooks
+        <Spinner loading={this.state.loadingChangeShelf} />
+        <Route path="/search" render={() => (
+          <SearchBooks
+            onChangeShelf={this.changeShelf}
+            booksOnShelves={this.state.books}
+          />
+        )}/>
+        {bookMap.hasBooks && (
+          <Route exact path="/" render={() => (
+            <ListBooks
+              books={bookMap}
               onChangeShelf={this.changeShelf}
-              booksOnShelves={this.state.books}
             />
           )}/>
-          {bookMap.hasBooks && (
-            <Route exact path="/" render={() => (
-              <ListBooks
-                books={bookMap}
-                onChangeShelf={this.changeShelf}
-              />
-            )}/>
-          )}
-        </div>
+        )}
       </div>
     )
   }

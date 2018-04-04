@@ -47,21 +47,14 @@ class SearchBooks extends Component
   render() {
     return (
         <div className="search-books">
-          {this.state.loading && (
-            <div className="loading">
-              <ClipLoader
-                color={'#2e7c31'}
-                loading={this.state.loading}
-              />
-            </div>
-          )}
           <div className="search-books-bar">
             <Link className="close-search" to="/">Close</Link>
             <div className="search-books-input-wrapper">
               <input type="text" placeholder="Search by title or author" value={this.state.query} onChange={(e) => this.updateQuery(e.target.value)} />
             </div>
           </div>
-          <div className={`search-books-results ${this.state.loading ? 'transparent' : ''}`}>
+          <div className="search-books-results">
+            <Spinner loading={this.state.loading} />
             {this.state.noResults ? (
               <p>No results found. Please, refine your search.</p>
             ) : (
