@@ -16,19 +16,19 @@ function ListBooks(props) {
           <div className="bookshelf">
             <h2 className="bookshelf-title">Curretly Reading</h2>
             <div className="bookshelf-books">
-              <BookShelf books={books.currentlyReading} onChangeShelf={onChangeShelf}  />
+              {books.currentlyReading && (<BookShelf books={books.currentlyReading} onChangeShelf={onChangeShelf}  />)}
             </div>
           </div>
           <div className="bookshelf">
             <h2 className="bookshelf-title">Want to Read</h2>
             <div className="bookshelf-books">
-              <BookShelf books={books.wantToRead} onChangeShelf={onChangeShelf}  />
+              {books.wantToRead && (<BookShelf books={books.wantToRead} onChangeShelf={onChangeShelf}  />)}
             </div>
           </div>
           <div className="bookshelf">
             <h2 className="bookshelf-title">Read</h2>
             <div className="bookshelf-books">
-              <BookShelf books={books.read} onChangeShelf={onChangeShelf}  />
+              {books.read && (<BookShelf books={books.read} onChangeShelf={onChangeShelf}  />)}
             </div>
           </div>
         </div>
